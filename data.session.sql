@@ -1,0 +1,1 @@
+DROP mainapp_categpry FROM TABLE;
