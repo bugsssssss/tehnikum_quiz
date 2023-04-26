@@ -116,19 +116,23 @@ class UserDetailSerializer(serializers.ModelSerializer):
     questions = serializers.SerializerMethodField()
 
     def get_questions(self, obj):
+
+        answers = UserAnswers.objects.filter(user_id=obj.user_id)
+        print(answers)
+
         return [
             {'question_id': question.id,
              'question': question.question,
              'question_type': question.question_type.name,
              'question_status': question.status,
              #  'attempts': question.attempts,
-             'answer': None,
-             #  [
-             #      {
-             #          'answer_id': answer.id,
-             #          'answer': answer.answer,
-             #          # 'is_correct': answer.is_correct
-             #      } for answer in question.answers.all()]
+             'answer':
+             [
+                 {
+                     'answer_id': answer.id,
+                     'answer': answer.answer,
+                     # 'is_correct': answer.is_correct
+                 } for answer in question.answers.all()]
              } for question in obj.questions.all()
         ]
 

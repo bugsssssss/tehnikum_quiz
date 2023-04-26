@@ -20,7 +20,7 @@ urlpatterns = [
     path('answers/<int:pk>/', AnswersDetail.as_view(), name='answers-detail'),
     path('temp-users/<int:pk>/', TempUsersDetail.as_view(),
          name='temp-users-detail'),
-    # path('get-user/<int:user_id>/',
-    #      GetUserDetail.as_view(), name='get-user-detail'),
+    path('get-user/<int:pk>/',
+         GetUserDetail.as_view(), name='get-user-detail'),
 ]
 urlpatterns += routers.urls

@@ -156,7 +156,8 @@ class UserAnswersViewSet(viewsets.ModelViewSet):
             is_correct = Answer.objects.get(
                 id=serializer.data['answer_id']).is_correct
             response = {
-                'is_correct': is_correct
+                'is_correct': is_correct,
+                'answer': serializer.data['answer_id'],
             }
             print(user_data)
 
@@ -186,23 +187,23 @@ class UserDetailViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-# class GetUserDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = UserDetail.objects.all()
-#     serializer_class = UserDetailSerializer
+class GetUserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserDetail.objects.all()
+    serializer_class = UserDetailSerializer
 
-#     def update(self, request, *args, **kwargs):
-#         # Get the instance to be updated
-#         instance = self.get_object()
+    def update(self, request, *args, **kwargs):
+        # Get the instance to be updated
+        instance = self.get_object()
 
-#         # Create a dictionary with the new data to be updated
-#         data = {"user_id": request.data.get("user_id")}
+        # Create a dictionary with the new data to be updated
+        data = {"user_id": request.data.get("user_id")}
 
-#         # Create an instance of the serializer with the new data and the partial flag
-#         serializer = self.get_serializer(instance, data=data, partial=True)
+        # Create an instance of the serializer with the new data and the partial flag
+        serializer = self.get_serializer(instance, data=data, partial=True)
 
-#         # Check if the serializer is valid and save the changes to the database
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response('success', status=status.HTTP_200_OK)
-#         else:
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Check if the serializer is valid and save the changes to the database
+        if serializer.is_valid():
+            serializer.save()
+            return Response('success', status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
