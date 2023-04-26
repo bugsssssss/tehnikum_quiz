@@ -13,7 +13,19 @@ SECRET_KEY = 'django-insecure-^5++pydyiw6!xr=^1=83h*(rm762%014y@l!zcsr1n2-r=w2@k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ALLOWED_ORIGINS = [
+#    "https://p-api2.tehnikum.school",
+# ]
+
+CORS_ORIGIN_WHITELIST = ['https://p-api2.tehnikum.school',]
 
 
 # Application definition
@@ -27,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mainapp',
     'rest_framework',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -37,6 +50,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware'
 ]
 
 ROOT_URLCONF = 'tehnikum_quiz.urls'
@@ -70,6 +85,21 @@ DATABASES = {
     }
 }
 
+# ? For production server
+# DATABASES = {
+#     'default': {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'NAME': 'tehnikum_quiz',
+#         'USER': 'admin',
+#         'PASSWORD': 'admin',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -107,6 +137,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# STATICFILES_DIRS = [os.path.join('static')]
+# import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
