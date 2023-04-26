@@ -155,9 +155,14 @@ class UserAnswersViewSet(viewsets.ModelViewSet):
             }
             is_correct = Answer.objects.get(
                 id=serializer.data['answer_id']).is_correct
+            answers = Question.objects.get(
+                id=serializer.data['question_id']).answers.all()
+            for i in answers:
+                if i.is_correct:
+                    correct_answer = i.id
             response = {
                 'is_correct': is_correct,
-                'answer': serializer.data['answer_id'],
+                'answer_id': correct_answer,
             }
             print(user_data)
 
