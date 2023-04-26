@@ -40,7 +40,7 @@ async def start_message(message):
     args = message.get_args()
     if args:
         response = requests.get(
-            f'http://p-api2.tehnikum.school/api/temp-users/{args}/')
+            f'https://p-api2.tehnikum.school/api/temp-users/{args}/')
         if response.status_code == 200:
             print('такой юзер есть')
             user_data_json = response.json()
@@ -61,13 +61,13 @@ async def start_message(message):
                 'verification_code': 0
             }
             response = requests.post(
-                'http://127.0.0.1:8000/api/bot-users/', data=user_data)
+                'https://p-api2.tehnikum.school/api/bot-users/', data=user_data)
             print(f'User has been created: {response.json()}')
     else:
         user_id = message.from_user.id
 
         user = requests.get(
-            f'http://127.0.0.1:8000/api/bot-users/?id={user_id}').json()
+            f'https://p-api2.tehnikum.school/api/bot-users/?id={user_id}').json()
 
         if user and user[0]['is_verified']:
             file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
@@ -131,7 +131,8 @@ async def get_number(message, state=Registration.getting_phone_number):
     Если готов то жми на "Поумней!"'''
     global status
 
-    all_users = requests.get('http://127.0.0.1:8000/api/bot-users/').json()
+    all_users = requests.get(
+        'https://p-api2.tehnikum.school/api/bot-users/').json()
 
     registered_numbers = [user['phone_number']
                           for user in all_users if user['is_verified']]
@@ -176,7 +177,7 @@ async def get_number(message, state=Registration.getting_phone_number):
             code = all_info.get("verification_code")
 
             already_user = requests.get(
-                f'http://127.0.0.1:8000/api/bot-users/?id={message.from_user.id}').json()
+                f'https://p-api2.tehnikum.school/api/bot-users/?id={message.from_user.id}').json()
             print(already_user)
 
         # ! Проверяем, есть ли пользователь в базе
@@ -189,7 +190,7 @@ async def get_number(message, state=Registration.getting_phone_number):
                     "verification_code": verification_code,
                     "is_verified": "False"
                 }
-                url = f'http://127.0.0.1:8000/api/bot-users/{user_id}/'
+                url = f'https://p-api2.tehnikum.school/api/bot-users/{user_id}/'
 
                 # ! Обновляем его верификационный код
                 response = requests.put(url, data=new_user_info)
@@ -207,7 +208,7 @@ async def get_number(message, state=Registration.getting_phone_number):
                     "is_verified": "False"
 
                 }
-                url = 'http://127.0.0.1:8000/api/bot-users/'
+                url = 'https://p-api2.tehnikum.school/api/bot-users/'
 
                 # ! Отпправляем юзера в базу данных
                 response = requests.post(url, data=user_info)
@@ -238,7 +239,7 @@ async def get_verification(message, state=Registration.getting_verification_code
     Если готов то жми на "Поумней!"'''
         print('Verification')
         verification_code = message.text
-        url = f'http://127.0.0.1:8000/api/bot-users/?id={message.from_user.id}'
+        url = f'https://p-api2.tehnikum.school/api/bot-users/?id={message.from_user.id}'
 
         try:
 
@@ -257,7 +258,9 @@ async def get_verification(message, state=Registration.getting_verification_code
                 with open(file_path, "rb") as photo:
                     await bot.send_photo(chat_id=message.from_user.id,
                                          photo=photo,
-                                         caption=caption1, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
+                                         caption=caption1, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb(),
+                                         #  show_alert=True
+                                         )
                 user_data = {
                     'id': user['id'],
                     'first_name': user['first_name'],
@@ -265,7 +268,7 @@ async def get_verification(message, state=Registration.getting_verification_code
                     "is_verified": "True",
                     'verification_code': user['verification_code']
                 }
-                url = f'http://127.0.0.1:8000/api/bot-users/{user["id"]}/'
+                url = f'https://p-api2.tehnikum.school/api/bot-users/{user["id"]}/'
                 # ? Обновляем статус верификации
                 response = requests.put(url, data=user_data)
                 print(

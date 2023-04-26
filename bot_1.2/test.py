@@ -7,6 +7,6 @@ user_info = {
     "phone_number": '2312312',
     "verification_code": 122134
 }
-url = 'http://127.0.0.1:8000/api/bot-users/'
+url = 'https://p-api2.tehnikum.school/api/bot-users/'
 response = requests.post(url, data=user_info)
 print(response.json())

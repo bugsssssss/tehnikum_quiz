@@ -96,3 +96,9 @@ class Quiz(models.Model):
     class Meta:
         verbose_name = 'Quiz'
         verbose_name_plural = 'Quiz'
+
+
+class UserAnswers(models.Model):
+    user_id = models.ForeignKey(
+        'mainapp.BotUsers', on_delete=models.CASCADE, related_name='User')
+    

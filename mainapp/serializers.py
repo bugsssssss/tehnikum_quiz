@@ -38,7 +38,7 @@ class QuizSerializer(serializers.ModelSerializer):
 
     def get_questions(self, obj):
         return [
-            {'question': question.question, 'question_type': question.question_type.name, 'attempts': question.attempts, 'answers': [
+            {'question_id': question.id, 'question': question.question, 'question_type': question.question_type.name, 'attempts': question.attempts, 'answers': [
                 {
                     'answer_id': answer.id,
                     'answer': answer.answer,

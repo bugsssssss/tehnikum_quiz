@@ -15,7 +15,7 @@ class AnswerAdmin(admin.ModelAdmin):
 @admin.register(BotUsers)
 class BotUsersAdmin(admin.ModelAdmin):
     list_display = (
-        'first_name', 'id', 'phone_number'
+        'first_name', 'id', 'phone_number', 'date_created'
     )
 
 
