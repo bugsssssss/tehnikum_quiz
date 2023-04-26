@@ -157,6 +157,7 @@ class UserAnswersViewSet(viewsets.ModelViewSet):
                 id=serializer.data['answer_id']).is_correct
             answers = Question.objects.get(
                 id=serializer.data['question_id']).answers.all()
+            correct_answer = None
             for i in answers:
                 if i.is_correct:
                     correct_answer = i.id
@@ -164,8 +165,6 @@ class UserAnswersViewSet(viewsets.ModelViewSet):
                 'is_correct': is_correct,
                 'answer_id': correct_answer,
             }
-            print(user_data)
-
             return Response(response, status=status.HTTP_201_CREATED)
         else:
             # Return a response with the errors
