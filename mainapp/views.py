@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from .forms import *
+from rest_framework import status
+import requests
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -54,6 +56,23 @@ class QuizViewSet(viewsets.ModelViewSet):
 class BotUsersDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = BotUsers.objects.all()
     serializer_class = BotUsersSerializer
+
+    def update(self, request, *args, **kwargs):
+        # Get the instance to be updated
+        instance = self.get_object()
+
+        # Create a dictionary with the new data to be updated
+        data = {"category_id": request.data.get("category_id")}
+
+        # Create an instance of the serializer with the new data and the partial flag
+        serializer = self.get_serializer(instance, data=data, partial=True)
+
+        # Check if the serializer is valid and save the changes to the database
+        if serializer.is_valid():
+            serializer.save()
+            return Response('success', status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AnswersViewSet(viewsets.ModelViewSet):
@@ -115,3 +134,75 @@ class TempUsersViewSet(viewsets.ModelViewSet):
 class TempUsersDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = TempUser.objects.all()
     serializer_class = TempUserSerializer
+
+
+class UserAnswersViewSet(viewsets.ModelViewSet):
+    queryset = UserAnswers.objects.all()
+    serializer_class = UserAnswersSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            # Save the data to the database
+            self.perform_create(serializer)
+            # Return a response with the created data
+            user_data = {
+                'id': serializer.data['id'],
+                'user_id': serializer.data['user_id'],
+                'question_id': serializer.data['question_id'],
+                'answer_id': serializer.data['answer_id'],
+                'is_correct': 'test',
+            }
+            is_correct = Answer.objects.get(
+                id=serializer.data['answer_id']).is_correct
+            response = {
+                'is_correct': is_correct
+            }
+            print(user_data)
+
+            return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            # Return a response with the errors
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_queryset(self):
+        queryset = UserAnswers.objects.all()
+        user_id = self.request.query_params.get('user_id', None)
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+
+        return queryset
+
+
+class UserDetailViewSet(viewsets.ModelViewSet):
+    queryset = UserDetail.objects.all()
+    serializer_class = UserDetailSerializer
+
+    def get_queryset(self):
+        queryset = UserDetail.objects.all()
+        user_id = self.request.query_params.get('user_id', None)
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+        return queryset
+
+
+# class GetUserDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = UserDetail.objects.all()
+#     serializer_class = UserDetailSerializer
+
+#     def update(self, request, *args, **kwargs):
+#         # Get the instance to be updated
+#         instance = self.get_object()
+
+#         # Create a dictionary with the new data to be updated
+#         data = {"user_id": request.data.get("user_id")}
+
+#         # Create an instance of the serializer with the new data and the partial flag
+#         serializer = self.get_serializer(instance, data=data, partial=True)
+
+#         # Check if the serializer is valid and save the changes to the database
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response('success', status=status.HTTP_200_OK)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

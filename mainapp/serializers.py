@@ -38,12 +38,19 @@ class QuizSerializer(serializers.ModelSerializer):
 
     def get_questions(self, obj):
         return [
-            {'question_id': question.id, 'question': question.question, 'question_type': question.question_type.name, 'attempts': question.attempts, 'answers': [
-                {
-                    'answer_id': answer.id,
-                    'answer': answer.answer,
-                    # 'is_correct': answer.is_correct
-                } for answer in question.answers.all()]} for question in obj.questions.all()]
+            {'question_id': question.id,
+             'question': question.question,
+             'question_type': question.question_type.name,
+             'question_status': question.status,
+             #  'attempts': question.attempts,
+             'answers':
+             [
+                 {
+                     'answer_id': answer.id,
+                     'answer': answer.answer,
+                     # 'is_correct': answer.is_correct
+                 } for answer in question.answers.all()]} for question in obj.questions.all()
+        ]
 
     class Meta:
         model = Quiz
@@ -63,6 +70,7 @@ class BotUsersSerializer(serializers.ModelSerializer):
             'id',
             'first_name',
             'phone_number',
+            'category_id',
             'verification_code',
             'is_verified'
         ]
@@ -87,4 +95,48 @@ class TempUserSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'phone_number',
+        ]
+
+
+class UserAnswersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserAnswers
+        fields = [
+            'id',
+            'user_id',
+            'question_id',
+            'answer_id',
+            # 'is_correct',
+        ]
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+
+    questions = serializers.SerializerMethodField()
+
+    def get_questions(self, obj):
+        return [
+            {'question_id': question.id,
+             'question': question.question,
+             'question_type': question.question_type.name,
+             'question_status': question.status,
+             #  'attempts': question.attempts,
+             'answer': None,
+             #  [
+             #      {
+             #          'answer_id': answer.id,
+             #          'answer': answer.answer,
+             #          # 'is_correct': answer.is_correct
+             #      } for answer in question.answers.all()]
+             } for question in obj.questions.all()
+        ]
+
+    class Meta:
+        model = UserDetail
+        fields = [
+            'id',
+            'user_id',
+            'category_id',
+            'questions',
         ]

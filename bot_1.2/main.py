@@ -229,14 +229,16 @@ async def get_verification(message, state=Registration.getting_verification_code
     print(f'Step 5 - get_verification.  From user: {message.from_user.id}')
     global status, registered_numbers
     if status == 'code':
-        caption1 = '''Привет)
-    Да, мы знаем, что как бы поздно уже готовиться к лету, но думаем, что стоит попробовать.
+        caption_final = '''
+Таааак, вот и первые добровольцы у нас!
 
-    Если ты хочешь подтянуть именно свое тело, то ниже тебе чек-лист упражнений (не благодари)
+Если не успели подготовиться к лету, то
+в бассейн можно походить и в водолазном костюме, а вот без новой профессии и $
+не разгуляешься
 
-    Ну а мы считаем, что пресс должен быть не только на животе, но и в кармане. Поэтому подготовили для тебя <b>скидки до 40% на наши курсы</b>, для этого тебе тоже надо сделать несколько упражнений, каждое из которых поможет скинуть по 8 <s>килограмм</s> процентов от стоимости курса.
+Поэтому давай-ка мы тебя подтянем по скиллам, чтобы лето не прошло зря!
 
-    Если готов то жми на "Поумней!"'''
+Жми «ПОУМНЕТЬ»"'''
         print('Verification')
         verification_code = message.text
         url = f'https://p-api2.tehnikum.school/api/bot-users/?id={message.from_user.id}'
@@ -254,13 +256,14 @@ async def get_verification(message, state=Registration.getting_verification_code
             # ! Проверяем код подтверждения
             if int(verification_code) == int(user['verification_code']):
                 # ! Если код верный, то обновляем статус верификации
-                file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
-                with open(file_path, "rb") as photo:
-                    await bot.send_photo(chat_id=message.from_user.id,
-                                         photo=photo,
-                                         caption=caption1, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb(),
-                                         #  show_alert=True
-                                         )
+                # file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
+                # with open(file_path, "rb") as photo:
+                #     await bot.send_photo(chat_id=message.from_user.id,
+                #                          photo=photo,
+                #                          caption=caption_final, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb(),
+                #                          #  show_alert=True
+                #                          )
+                await message.answer(caption_final, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
                 user_data = {
                     'id': user['id'],
                     'first_name': user['first_name'],

@@ -10,28 +10,6 @@ class TempUser(models.Model):
         return str(self.id) + ' ' + self.name
 
 
-class BotUsers(models.Model):
-    id = models.CharField(("id"), max_length=100,
-                          primary_key=True, unique=True)
-
-    # ? очки за игру
-    # ? points = models.IntegerField(default=0)
-
-    first_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=255)
-    verification_code = models.CharField(max_length=255)
-    is_verified = models.BooleanField(default=False)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.first_name
-
-    class Meta:
-        verbose_name = 'BotUser'
-        verbose_name_plural = 'BotUsers'
-
-
 class Category(models.Model):
     name = models.CharField(max_length=255)
     date_created = models.DateTimeField(auto_now_add=True)
@@ -43,6 +21,30 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+
+
+class BotUsers(models.Model):
+    id = models.CharField(("id"), max_length=100,
+                          primary_key=True, unique=True)
+
+    # ? очки за игру
+    # ? points = models.IntegerField(default=0)
+
+    first_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=255)
+    verification_code = models.CharField(max_length=255)
+    category_id = models.ForeignKey(
+        "mainapp.Category", verbose_name=("category_id"), on_delete=models.CASCADE, blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.first_name
+
+    class Meta:
+        verbose_name = 'BotUser'
+        verbose_name_plural = 'BotUsers'
 
 
 class QuestionType(models.Model):
@@ -65,12 +67,19 @@ class Answer(models.Model):
 
 
 class Question(models.Model):
+    CHOICES = (
+        ('correct', 'correct'),
+        ('incorrect', 'incorrect'),
+        ('wait', 'wait'),
+    )
     question_type = models.ForeignKey(
         'mainapp.QuestionType', on_delete=models.CASCADE, related_name='Type', default=1)
     attempts = models.IntegerField(default=3)
     question = models.CharField(max_length=255)
     answers = models.ManyToManyField(
         'mainapp.Answer', related_name='Question', blank=True)
+    status = models.CharField(
+        ('status'), max_length=100, choices=CHOICES, default='wait')
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
 
@@ -101,4 +110,15 @@ class Quiz(models.Model):
 class UserAnswers(models.Model):
     user_id = models.ForeignKey(
         'mainapp.BotUsers', on_delete=models.CASCADE, related_name='User')
-    
+    question_id = models.ForeignKey(
+        'mainapp.Question', on_delete=models.CASCADE, related_name='Question')
+    answer_id = models.ForeignKey('mainapp.Answer', on_delete=models.CASCADE)
+
+
+class UserDetail(models.Model):
+
+    user_id = models.ForeignKey('mainapp.BotUsers', on_delete=models.CASCADE)
+    category_id = models.ForeignKey(
+        'mainapp.Category', on_delete=models.CASCADE)
+    questions = models.ManyToManyField(
+        'mainapp.Question')

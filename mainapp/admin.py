@@ -37,3 +37,13 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(TempUser)
 class TempUserAdmin(admin.ModelAdmin):
     list_display = ['name', 'id', 'phone_number']
+
+
+@admin.register(UserAnswers)
+class UserAnswersAdmin(admin.ModelAdmin):
+    list_display = ['user_id', 'question_id', 'answer_id']
+
+
+@admin.register(UserDetail)
+class UserDetailAdmin(admin.ModelAdmin):
+    list_display = ['user_id', 'category_id']
