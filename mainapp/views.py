@@ -43,6 +43,13 @@ class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
 
+    def get_queryset(self):
+        queryset = Quiz.objects.all()
+        category_id = self.request.query_params.get('category_id', None)
+        if category_id:
+            queryset = queryset.filter(category__id=category_id)
+        return queryset
+
 
 class BotUsersDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = BotUsers.objects.all()
