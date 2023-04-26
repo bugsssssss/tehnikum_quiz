@@ -6,6 +6,9 @@ class TempUser(models.Model):
     name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
 
+    def __str__(self):
+        return str(self.id) + ' ' + self.name
+
 
 class BotUsers(models.Model):
     id = models.CharField(("id"), max_length=100,
@@ -63,7 +66,7 @@ class Answer(models.Model):
 
 class Question(models.Model):
     question_type = models.ForeignKey(
-        'mainapp.QuestionType', on_delete=models.CASCADE, related_name='Type')
+        'mainapp.QuestionType', on_delete=models.CASCADE, related_name='Type', default=1)
     attempts = models.IntegerField(default=3)
     question = models.CharField(max_length=255)
     answers = models.ManyToManyField(

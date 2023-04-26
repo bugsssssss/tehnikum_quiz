@@ -11,7 +11,7 @@ routers.register('temp-users', TempUsersViewSet)
 
 
 urlpatterns = [
-    path('', home, name='home'),
+    # path('', home, name='home'),
     path('bot-users/', BotUsersList.as_view(), name='bot-users'),
     path('bot-users/<int:pk>/', BotUsersDetail.as_view(), name='bot-users-detail'),
     path('questions/<int:pk>/', QuestionDetail.as_view(), name='question-detail'),

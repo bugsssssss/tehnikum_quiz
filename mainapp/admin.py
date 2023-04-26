@@ -32,3 +32,8 @@ class QuestionTypeAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'id', 'date_created']
+
+
+@admin.register(TempUser)
+class TempUserAdmin(admin.ModelAdmin):
+    list_display = ['name', 'id', 'phone_number']

@@ -40,8 +40,8 @@ class QuizSerializer(serializers.ModelSerializer):
         return [
             {'question': question.question, 'question_type': question.question_type.name, 'attempts': question.attempts, 'answers': [
                 {
+                    'answer_id': answer.id,
                     'answer': answer.answer,
-
                     # 'is_correct': answer.is_correct
                 } for answer in question.answers.all()]} for question in obj.questions.all()]
 
