@@ -34,7 +34,7 @@ class QuizSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
 
     def get_category(self, obj):
-        return {'category_id': obj.category.id, 'category': obj.category.name}
+        return obj.category.id
 
     def get_questions(self, obj):
         return [

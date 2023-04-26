@@ -1,4 +1,4 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo, InlineKeyboardButton, InlineKeyboardMarkup
 
 
 def name_kb():
@@ -27,7 +27,20 @@ def web_app_kb():
 
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
 
-    button = KeyboardButton('Пройти квиз!', web_app=web_app)
+    button = KeyboardButton('Поумней!', web_app=web_app)
+
+    kb.add(button)
+
+    return kb
+
+
+def web_app_inline_kb():
+
+    web_app = WebAppInfo(url='https://mralex-neo.github.io/TelegrammBot/')
+
+    kb = InlineKeyboardMarkup()
+
+    button = InlineKeyboardButton('Поумней!', web_app=web_app)
 
     kb.add(button)
 
