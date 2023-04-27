@@ -101,6 +101,11 @@ class TempUserSerializer(serializers.ModelSerializer):
 
 class UserAnswersSerializer(serializers.ModelSerializer):
 
+    is_correct = serializers.SerializerMethodField()
+
+    def get_is_correct(self, obj):
+        return obj.answer_id.is_correct
+
     class Meta:
         model = UserAnswers
         fields = [
@@ -108,6 +113,7 @@ class UserAnswersSerializer(serializers.ModelSerializer):
             'user_id',
             'question_id',
             'answer_id',
+            'is_correct',
             # 'is_correct',
         ]
 

@@ -173,7 +173,7 @@ async def get_number(message, state=Registration.getting_phone_number):
 
         # ! отправляем смс с кодом подтверждения
             send_sms(phone_number,
-                     f'Ваш код подтверждения: {verification_code}')
+                     f'TEHNIKUM: Ваш код {verification_code}')
 
             all_info = await state.get_data()
 

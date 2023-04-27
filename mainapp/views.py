@@ -314,3 +314,43 @@ class GetUserDetail(APIView):
         }
 
         return Response(data)
+
+
+class CorrectAnswers(APIView):
+
+    def get(self, request):
+        user_id = int(request.query_params.get('user_id', None))
+
+        user = requests.get(
+            f'https://p-api2.tehnikum.school/api/bot-users/?id={user_id}').json()
+
+        if user:
+            user_id = user[0]['id']
+            user_anwers = requests.get(
+                f'http://p-api2.tehnikum.school/api/user-answers/?user_id={user_id}').json()
+            correct_answers = 0
+            for i in user_anwers:
+                if i['is_correct']:
+                    correct_answers += 1
+            print(correct_answers)
+            discount = '0%'
+            if correct_answers == 5:
+                discount = '40%'
+            elif correct_answers == 4:
+                discount = '32%'
+            elif correct_answers == 3:
+                discount = '24%'
+            elif correct_answers == 2:
+                discount = '16%'
+            elif correct_answers == 1:
+                discount = '8%'
+            else:
+                discount = '0%'
+            return Response({
+                'user_id': user_id,
+                'correct_answers': correct_answers,
+                'discount': discount,
+            })
+
+        else:
+            user_id = None
