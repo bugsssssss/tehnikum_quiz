@@ -9,7 +9,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display = ('answer', 'is_correct', 'date_created')
+    list_display = ('id', 'answer', 'is_correct', 'date_created')
 
 
 @admin.register(BotUsers)

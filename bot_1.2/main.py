@@ -39,6 +39,16 @@ async def start_message(message):
 Ну а мы считаем, что пресс должен быть не только на животе, но и в кармане. Поэтому подготовили для тебя <b>скидки до 40% на наши курсы</b>, для этого тебе тоже надо сделать несколько упражнений, каждое из которых поможет скинуть по 8 <s>килограмм</s> процентов от стоимости курса.
 
 Если готов то жми на "Имя"'''
+    caption_final = '''
+Таааак, вот и первые добровольцы у нас!
+
+Если не успели подготовиться к лету, то
+в бассейн можно походить и в водолазном костюме, а вот без новой профессии и $
+не разгуляешься
+
+Поэтому давай-ка мы тебя подтянем по скиллам, чтобы лето не прошло зря!
+
+Жми «ПОУМНЕТЬ»"'''
     args = message.get_args()
     if args:
 
@@ -58,6 +68,7 @@ async def start_message(message):
                 await bot.send_photo(chat_id=message.chat.id,
                                      photo=photo,
                                      caption=caption1, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
+
             user_data = {
                 'id': message.chat.id,
                 'first_name': name,
@@ -76,10 +87,11 @@ async def start_message(message):
 
         if user and user[0]['is_verified']:
             file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
-            with open(file_path, "rb") as photo:
-                await bot.send_photo(chat_id=message.chat.id,
-                                     photo=photo,
-                                     caption=caption1, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
+            # with open(file_path, "rb") as photo:
+            #     await bot.send_photo(chat_id=message.chat.id,
+            #                          photo=photo,
+            #                          caption=caption_final, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
+            await message.answer(caption_final, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
         else:
             await Registration.getting_started.set()
             file_path = os.path.join(os.getcwd(), "tehnikum.jpg")

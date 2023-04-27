@@ -308,6 +308,7 @@ class GetUserDetail(APIView):
 
         data = {
             'user_id': user[0]['id'],
+            'phone_number': user[0]['phone_number'],
             'first_name': user[0]['first_name'],
             'category_id': category_id,
             'questions': questions,
