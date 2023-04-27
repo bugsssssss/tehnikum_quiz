@@ -59,7 +59,7 @@ async def start_message(message):
             user_data_json = response.json()
             name = user_data_json['name']
             phone_number = user_data_json['phone_number']
-            url = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={phone_number}&name={name}&action=m-lead'
+            url = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={phone_number}&name={name}&action=m-bot'
             response = requests.get(url)
             print(response.text)
             file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
@@ -126,7 +126,7 @@ async def get_name(message, state=Registration.getting_name_state):
     user_name = message.text
     await state.update_data(name=user_name)
 
-    await message.answer('Теперь нужен твой номер телефона, чтобы зачислить по нему скидку)\nВведи его в формате: <b>998991234567</b> или отправь свой контакт:', reply_markup=buttons.phone_number_kb(), parse_mode=types.ParseMode.HTML)
+    await message.answer('Теперь нужен твой номер телефона, чтобы зачислить по нему скидку)', reply_markup=buttons.phone_number_kb(), parse_mode=types.ParseMode.HTML)
     status = 'number'
     # ? Переход на этап получения номера
 
@@ -295,7 +295,7 @@ async def get_verification(message, state=Registration.getting_verification_code
                 response = requests.put(
                     url, data={'category_id': None, 'is_verified': True})
 
-                url_amo = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={user_data["phone_number"]}&name={user_data["first_name"]}&action=m-lead'
+                url_amo = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={user_data["phone_number"]}&name={user_data["first_name"]}&action=m-bot'
                 response_amo = requests.get(url_amo)
                 print(
                     f'Is verified status has been updated: {response.json()}')

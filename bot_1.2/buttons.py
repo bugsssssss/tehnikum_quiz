@@ -23,7 +23,7 @@ def phone_number_kb():
 
 def web_app_kb():
 
-    web_app = WebAppInfo(url='https://mralex-neo.github.io/TelegrammBot/')
+    web_app = WebAppInfo(url='https://api.tehnikum.uz/marafon/')
 
     kb = ReplyKeyboardMarkup(resize_keyboard=True)
 
@@ -36,7 +36,7 @@ def web_app_kb():
 
 def web_app_inline_kb():
 
-    web_app = WebAppInfo(url='https://mralex-neo.github.io/TelegrammBot/')
+    web_app = WebAppInfo(url='https://api.tehnikum.uz/marafon/')
 
     kb = InlineKeyboardMarkup()
 
