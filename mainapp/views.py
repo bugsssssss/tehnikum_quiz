@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from rest_framework import viewsets, generics
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from .forms import *
@@ -186,47 +188,86 @@ class UserAnswersViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class UserDetailViewSet(viewsets.ModelViewSet):
-    queryset = UserDetail.objects.all()
-    serializer_class = UserDetailSerializer
+# class UserDetailViewSet(viewsets.ModelViewSet):
+#     queryset = UserDetail.objects.all()
+#     serializer_class = UserDetailSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
+#     # def create(self, request, *args, **kwargs):
+#     #     serializer = self.get_serializer(data=request.data)
+#     #     if serializer.is_valid():
+#     #         # Save the data to the database
+#     #         self.perform_create(serializer)
+#     #         # Return a response with the created data
+
+#     #         return Response(user_data, status=status.HTTP_201_CREATED)
+#     #     else:
+#     #         # Return a response with the errors
+#     #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def get_queryset(self):
+#         queryset = UserDetail.objects.all()
+#         user_id = self.request.query_params.get('user_id', None)
+#         if user_id:
+#             queryset = queryset.filter(user_id=user_id)
+#         return queryset
+
+
+# class GetUserDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = GetUser.objects.all()
+#     serializer_class = GetUserDetailSerializer
+#     print(queryset)
+
+    # def update(self, request, *args, **kwargs):
+    #     # Get the instance to be updated
+    #     instance = self.get_object()
+
+    #     # Create a dictionary with the new data to be updated
+    #     data = {"user_id": request.data.get("user_id")}
+
+    #     # Create an instance of the serializer with the new data and the partial flag
+    #     serializer = self.get_serializer(instance, data=data, partial=True)
+
+    #     # Check if the serializer is valid and save the changes to the database
     #     if serializer.is_valid():
-    #         # Save the data to the database
-    #         self.perform_create(serializer)
-    #         # Return a response with the created data
-
-    #         return Response(user_data, status=status.HTTP_201_CREATED)
+    #         serializer.save()
+    #         return Response('success', status=status.HTTP_200_OK)
     #     else:
-    #         # Return a response with the errors
     #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get_queryset(self):
-        queryset = UserDetail.objects.all()
-        user_id = self.request.query_params.get('user_id', None)
-        if user_id:
-            queryset = queryset.filter(user_id=user_id)
-        return queryset
+class GetUserDetail(APIView):
 
+    def get(self, request):
+        user_id = int(request.query_params.get('user_id', None))
+        category_id = int(request.query_params.get('category_id', None))
+        user = None
+        try:
+            user = requests.get(
+                f'https://p-api2.tehnikum.school/api/bot-users/?id={user_id}').json()
+        except:
+            pass
+        required_questions = requests.get(
+            f'https://p-api2.tehnikum.school/api/quizzes/?category_id={category_id}').json()[0]['questions']
+        questions = []
+        for i in required_questions:
+            correct_answer = None
+            answers = i['answers']
+            for j in answers:
+                print(j)
+            question_data = {
+                'question_id': i['question_id'],
+                'question_status': 'wait',
+                'selected_answer': 'none',
+                'correct_answer': 'none',
+                'answers': i['answers'],
+            }
+            questions.append(question_data)
+        print(question_data)
 
-class GetUserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = UserDetail.objects.all()
-    serializer_class = UserDetailSerializer
+        data = {
+            'user_id': user[0]['id'],
+            'first_name': user[0]['first_name'],
+            'category_id': category_id,
+            'questions': questions,
+        }
 
-    def update(self, request, *args, **kwargs):
-        # Get the instance to be updated
-        instance = self.get_object()
-
-        # Create a dictionary with the new data to be updated
-        data = {"user_id": request.data.get("user_id")}
-
-        # Create an instance of the serializer with the new data and the partial flag
-        serializer = self.get_serializer(instance, data=data, partial=True)
-
-        # Check if the serializer is valid and save the changes to the database
-        if serializer.is_valid():
-            serializer.save()
-            return Response('success', status=status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data)

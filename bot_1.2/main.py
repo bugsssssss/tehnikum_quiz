@@ -172,8 +172,8 @@ async def get_number(message, state=Registration.getting_phone_number):
             verification_code = random.randint(1000, 9999)
 
         # ! отправляем смс с кодом подтверждения
-            # send_sms(phone_number,
-            #          f'Ваш код подтверждения: {verification_code}')
+            send_sms(phone_number,
+                     f'Ваш код подтверждения: {verification_code}')
 
             all_info = await state.get_data()
 

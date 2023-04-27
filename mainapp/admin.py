@@ -44,6 +44,11 @@ class UserAnswersAdmin(admin.ModelAdmin):
     list_display = ['user_id', 'question_id', 'answer_id']
 
 
-@admin.register(UserDetail)
-class UserDetailAdmin(admin.ModelAdmin):
-    list_display = ['user_id', 'category_id']
+# @admin.register(UserDetail)
+# class UserDetailAdmin(admin.ModelAdmin):
+#     list_display = ['user_id', 'category_id']
+
+
+@admin.register(GetUser)
+class GetUserAdmin(admin.ModelAdmin):
+    list_display = ['id', 'category_id']

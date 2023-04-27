@@ -9,7 +9,7 @@ routers.register('quizzes', QuizViewSet)
 routers.register('answers', AnswersViewSet)
 routers.register('temp-users', TempUsersViewSet)
 routers.register('user-answers', UserAnswersViewSet)
-routers.register('get-user', UserDetailViewSet)
+# routers.register('get-user', UserDetailViewSet)
 
 
 urlpatterns = [
@@ -20,6 +20,7 @@ urlpatterns = [
     path('answers/<int:pk>/', AnswersDetail.as_view(), name='answers-detail'),
     path('temp-users/<int:pk>/', TempUsersDetail.as_view(),
          name='temp-users-detail'),
+    path('get-user', GetUserDetail.as_view(), name='get-user-detail'),
     path('get-user/<int:pk>/',
          GetUserDetail.as_view(), name='get-user-detail'),
 ]
