@@ -149,6 +149,29 @@ class UserAnswersViewSet(viewsets.ModelViewSet):
     queryset = UserAnswers.objects.all()
     serializer_class = UserAnswersSerializer
 
+    # def get_queryset(self):
+    #     queryset = UserAnswers.objects.all()
+    #     user_id = self.request.query_params.get('user_id', None)
+    #     question_id = self.request.query_params.get('question_id', None)
+    #     if user_id:
+    #         queryset = queryset.filter(user_id=user_id)
+    #     if question_id:
+    #         queryset = queryset.filter(question_id=question_id)
+    #     return queryset
+
+    def list(self, request):
+        user_id = self.request.query_params.get('user_id', None)
+        question_id = self.request.query_params.get('question_id', None)
+
+        if user_id and question_id:
+            queryset = self.filter_queryset(self.get_queryset())
+            queryset = queryset.filter(
+                user_id=user_id, question_id=question_id)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return super().list(request)
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -252,14 +275,27 @@ class GetUserDetail(APIView):
             correct_answer = None
             answers = i['answers']
             for j in answers:
-                print(j)
+                if j['is_correct']:
+                    correct_answer = j['answer_id']
             question_data = {
                 'question_id': i['question_id'],
                 'question_status': 'wait',
                 'selected_answer': 'none',
-                'correct_answer': 'none',
-                'answers': i['answers'],
+                'correct_answer': correct_answer,
+                # 'answers': i['answers'],
             }
+            selected_answer = requests.get(
+                f'http://127.0.0.1:8000/api/user-answers/?user_id={user[0]["id"]}&question_id={question_data["question_id"]}').json()
+            question_data['selected_answer'] = selected_answer
+            if selected_answer:
+                question_data['selected_answer'] = selected_answer[0]['answer_id']
+                selected_answer = selected_answer[0]['answer_id']
+                if selected_answer == correct_answer:
+                    question_data['question_status'] = 'correct'
+                else:
+                    question_data['question_status'] = 'incorrect'
+            else:
+                question_data['selected_answer'] = None
             questions.append(question_data)
         print(question_data)
 
