@@ -183,6 +183,18 @@ class UserDetailViewSet(viewsets.ModelViewSet):
     queryset = UserDetail.objects.all()
     serializer_class = UserDetailSerializer
 
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     if serializer.is_valid():
+    #         # Save the data to the database
+    #         self.perform_create(serializer)
+    #         # Return a response with the created data
+
+    #         return Response(user_data, status=status.HTTP_201_CREATED)
+    #     else:
+    #         # Return a response with the errors
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def get_queryset(self):
         queryset = UserDetail.objects.all()
         user_id = self.request.query_params.get('user_id', None)

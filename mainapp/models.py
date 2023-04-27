@@ -87,6 +87,9 @@ class Question(models.Model):
         return self.question
 
     class Meta:
+        ordering = ['-date_created']
+
+    class Meta:
         verbose_name = 'Question'
         verbose_name_plural = 'Question'
 
@@ -116,9 +119,13 @@ class UserAnswers(models.Model):
 
 
 class UserDetail(models.Model):
-
+    # id = models.ForeignKey(
+    #     'mainapp.BotUsers', on_delete=models.CASCADE, primary_key=True, unique=True)
     user_id = models.ForeignKey('mainapp.BotUsers', on_delete=models.CASCADE)
     category_id = models.ForeignKey(
         'mainapp.Category', on_delete=models.CASCADE)
+    # selected_answer = models.ForeignKey(
+    #     'mainapp.Answer', on_delete=models.CASCADE, default=1)
+    # selected_answer = models.CharField(max_length=255, default='1')
     questions = models.ManyToManyField(
         'mainapp.Question')

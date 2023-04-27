@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from django.db.models import Q
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -113,28 +114,46 @@ class UserAnswersSerializer(serializers.ModelSerializer):
 
 class UserDetailSerializer(serializers.ModelSerializer):
 
+    user_id = serializers.SerializerMethodField()
     questions = serializers.SerializerMethodField()
+    user_id_var = None
+
+    def get_user_id(self, obj):
+        global user_id_var
+        user_id_var = obj.user_id.id
+        print(user_id_var)
+        return obj.user_id.id
 
     def get_questions(self, obj):
-
-        answers = UserAnswers.objects.filter(user_id=obj.user_id)
-        print(answers)
-
-        return [
-            {'question_id': question.id,
-             'question': question.question,
-             'question_type': question.question_type.name,
-             'question_status': question.status,
-             #  'attempts': question.attempts,
-             'answer':
-             [
-                 {
-                     'answer_id': answer.id,
-                     'answer': answer.answer,
-                     # 'is_correct': answer.is_correct
-                 } for answer in question.answers.all()]
-             } for question in obj.questions.all()
+        global user_id_var
+        data = [
+            {
+                'question_id': question.id,
+                'question': question.question,
+                'question_type': question.question_type.name,
+                'question_status': question.status,
+                #  'attempts': question.attempts,
+                'selected_answer': UserAnswers.objects.get(
+                    Q(user_id=user_id_var) & Q(question_id=question.id)).answer_id.id,
+                'correct_answer':
+                [
+                    {
+                        'answer_id': answer.id,
+                        'answer': answer.answer,
+                        # 'is_correct': answer.is_correct
+                    } for answer in question.answers.all()
+                    if answer.is_correct]
+            } for question in obj.questions.all()
         ]
+
+        for i in data:
+            # print(i['selected_answer'])
+            # print(i['correct_answer'][0]['answer_id'])
+            if i['selected_answer'] == i['correct_answer'][0]['answer_id']:
+                i['question_status'] = 'correct'
+            else:
+                i['question_status'] = 'incorrect'
+        return data
 
     class Meta:
         model = UserDetail
