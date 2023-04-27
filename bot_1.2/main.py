@@ -281,7 +281,7 @@ async def get_verification(message, state=Registration.getting_verification_code
                 # ? Обновляем статус верификации
 
                 response = requests.put(
-                    url, data={'category_id': 1, 'is_verified': True})
+                    url, data={'category_id': None, 'is_verified': True})
 
                 url_amo = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={user_data["phone_number"]}&name={user_data["first_name"]}&action=m-lead'
                 response_amo = requests.get(url_amo)

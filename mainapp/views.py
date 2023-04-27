@@ -58,12 +58,9 @@ class BotUsersDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BotUsersSerializer
 
     def update(self, request, *args, **kwargs):
-        print('put')
         # Get the instance to be updated
         instance = self.get_object()
         print('instance: ', instance)
-        instance['is_verified'] = True
-
         # Create a dictionary with the new data to be updated
         data = {
             "category_id": request.data.get(
@@ -71,6 +68,8 @@ class BotUsersDetail(generics.RetrieveUpdateDestroyAPIView):
             "is_verified": request.data.get(
                 "is_verified"),
         }
+        if data['is_verified'] == None:
+            data['is_verified'] = False
 
         # Create an instance of the serializer with the new data and the partial flag
         serializer = self.get_serializer(instance, data=data, partial=True)
