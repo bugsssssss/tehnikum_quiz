@@ -285,7 +285,7 @@ class GetUserDetail(APIView):
                 # 'answers': i['answers'],
             }
             selected_answer = requests.get(
-                f'http://127.0.0.1:8000/api/user-answers/?user_id={user[0]["id"]}&question_id={question_data["question_id"]}').json()
+                f'http://p-api2.tehnikum.school/api/user-answers/?user_id={user[0]["id"]}&question_id={question_data["question_id"]}').json()
             question_data['selected_answer'] = selected_answer
             if selected_answer:
                 question_data['selected_answer'] = selected_answer[0]['answer_id']
