@@ -18,3 +18,10 @@ import json
 
 # # response = requests.get(url).json()
 # response = requests.put(url, data=data)
+
+
+url = 'https://p-api2.tehnikum.school/api/bot-users/657061394/'
+
+data = {"category_id": None, 'is_verified': True}
+
+response = requests.put(url, data=data)

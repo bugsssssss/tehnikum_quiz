@@ -17,6 +17,8 @@ registered_numbers = []
 bot = Bot(token=TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
+status = 'start'
+
 
 @dp.message_handler(commands=['start'])
 async def start_message(message):
@@ -39,6 +41,7 @@ async def start_message(message):
 Если готов то жми на "Имя"'''
     args = message.get_args()
     if args:
+
         response = requests.get(
             f'https://p-api2.tehnikum.school/api/temp-users/{args}/')
         if response.status_code == 200:
@@ -46,7 +49,9 @@ async def start_message(message):
             user_data_json = response.json()
             name = user_data_json['name']
             phone_number = user_data_json['phone_number']
-
+            url = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={phone_number}&name={name}&action=m-lead'
+            response = requests.get(url)
+            print(response.text)
             file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
             with open(file_path, "rb") as photo:
 
@@ -86,8 +91,9 @@ async def start_message(message):
 
 @dp.message_handler(state=Registration.getting_started)
 async def getting_started(message):
+    global status
     print(f'Step 2 - getting_started.  From user: {message.from_user.id}')
-
+    status = 'name'
     await message.answer('''Красава!
 Мы всегда за то, что надо качать не только 🍑 , но  и 🧠
 
@@ -95,7 +101,6 @@ async def getting_started(message):
 
     await Registration.getting_name_state.set()
 
-status = 'name'
 
 # ? Этап получения имени
 
@@ -109,7 +114,7 @@ async def get_name(message, state=Registration.getting_name_state):
     user_name = message.text
     await state.update_data(name=user_name)
 
-    await message.answer('Теперь нужен твой номер телефона, чтобы зачислить по нему скидку)', reply_markup=buttons.phone_number_kb())
+    await message.answer('Теперь нужен твой номер телефона, чтобы зачислить по нему скидку)\nВведи его в формате: <b>998991234567</b> или отправь свой контакт:', reply_markup=buttons.phone_number_kb(), parse_mode=types.ParseMode.HTML)
     status = 'number'
     # ? Переход на этап получения номера
 
@@ -167,8 +172,8 @@ async def get_number(message, state=Registration.getting_phone_number):
             verification_code = random.randint(1000, 9999)
 
         # ! отправляем смс с кодом подтверждения
-            send_sms(phone_number,
-                     f'Ваш код подтверждения: {verification_code}')
+            # send_sms(phone_number,
+            #          f'Ваш код подтверждения: {verification_code}')
 
             all_info = await state.get_data()
 
@@ -255,6 +260,7 @@ async def get_verification(message, state=Registration.getting_verification_code
         if user:
             # ! Проверяем код подтверждения
             if int(verification_code) == int(user['verification_code']):
+                status = 'start'
                 # ! Если код верный, то обновляем статус верификации
                 # file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
                 # with open(file_path, "rb") as photo:
@@ -273,7 +279,12 @@ async def get_verification(message, state=Registration.getting_verification_code
                 }
                 url = f'https://p-api2.tehnikum.school/api/bot-users/{user["id"]}/'
                 # ? Обновляем статус верификации
-                response = requests.put(url, data=user_data)
+
+                response = requests.put(
+                    url, data={'category_id': 1, 'is_verified': True})
+
+                url_amo = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={user_data["phone_number"]}&name={user_data["first_name"]}&action=m-lead'
+                response_amo = requests.get(url_amo)
                 print(
                     f'Is verified status has been updated: {response.json()}')
             # else:
