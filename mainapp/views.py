@@ -261,43 +261,50 @@ class GetUserDetail(APIView):
 
     def get(self, request):
         user_id = int(request.query_params.get('user_id', None))
-        category_id = int(request.query_params.get('category_id', None))
+        # category_id = int(request.query_params.get('category_id', None))
+
         user = None
         try:
             user = requests.get(
                 f'https://p-api2.tehnikum.school/api/bot-users/?id={user_id}').json()
         except:
             pass
-        required_questions = requests.get(
-            f'https://p-api2.tehnikum.school/api/quizzes/?category_id={category_id}').json()[0]['questions']
-        questions = []
-        for i in required_questions:
-            correct_answer = None
-            answers = i['answers']
-            for j in answers:
-                if j['is_correct']:
-                    correct_answer = j['answer_id']
-            question_data = {
-                'question_id': i['question_id'],
-                'question_status': 'wait',
-                'selected_answer': 'none',
-                'correct_answer': correct_answer,
-                # 'answers': i['answers'],
-            }
-            selected_answer = requests.get(
-                f'http://p-api2.tehnikum.school/api/user-answers/?user_id={user[0]["id"]}&question_id={question_data["question_id"]}').json()
-            question_data['selected_answer'] = selected_answer
-            if selected_answer:
-                question_data['selected_answer'] = selected_answer[0]['answer_id']
-                selected_answer = selected_answer[0]['answer_id']
-                if selected_answer == correct_answer:
-                    question_data['question_status'] = 'correct'
+        print(user)
+        category_id = user[0]['category_id']
+        print(category_id)
+        if category_id:
+            required_questions = requests.get(
+                f'https://p-api2.tehnikum.school/api/quizzes/?category_id={category_id}').json()[0]['questions']
+            questions = []
+            for i in required_questions:
+                correct_answer = None
+                answers = i['answers']
+                for j in answers:
+                    if j['is_correct']:
+                        correct_answer = j['answer_id']
+                question_data = {
+                    'question_id': i['question_id'],
+                    'question_status': 'wait',
+                    'selected_answer': 'none',
+                    'correct_answer': correct_answer,
+                    # 'answers': i['answers'],
+                }
+                selected_answer = requests.get(
+                    f'http://p-api2.tehnikum.school/api/user-answers/?user_id={user[0]["id"]}&question_id={question_data["question_id"]}').json()
+                question_data['selected_answer'] = selected_answer
+                if selected_answer:
+                    question_data['selected_answer'] = selected_answer[0]['answer_id']
+                    selected_answer = selected_answer[0]['answer_id']
+                    if selected_answer == correct_answer:
+                        question_data['question_status'] = 'correct'
+                    else:
+                        question_data['question_status'] = 'incorrect'
                 else:
-                    question_data['question_status'] = 'incorrect'
-            else:
-                question_data['selected_answer'] = None
-            questions.append(question_data)
-        print(question_data)
+                    question_data['selected_answer'] = None
+                questions.append(question_data)
+            print(question_data)
+        else:
+            questions = None
 
         data = {
             'user_id': user[0]['id'],
