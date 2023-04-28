@@ -168,19 +168,17 @@ async def get_number(message, state=Registration.getting_phone_number):
                 already_registered = True
             else:
                 is_valid = True
+
+        elif len(message.text) == 13 and message.text[0] == '+':
+            phone_number = message.text
+            if phone_number in registered_numbers:
+                await message.answer('Этот номер уже зарегистрирован. Попробуй другой.')
+                already_registered = True
+            else:
+                is_valid = True
         else:
             phone_number = message.text
             is_valid = False
-        # elif len(message.text) == 13 and message.text[0] == '+':
-        #     phone_number = message.text
-        #     if phone_number in registered_numbers:
-        #         await message.answer('Этот номер уже зарегистрирован. Попробуй другой.')
-        #         already_registered = True
-        #     else:
-        #         is_valid = True
-            is_valid = False
-        phone_number = re.findall("\d+", phone_number)[0]
-        print(phone_number)
             # await state.update_data(number=phone_number)
         if is_valid:
             await message.answer('Теперь надо подтвердить. Отправили тебе смс с кодом, введи его сюда)', reply_markup=types.ReplyKeyboardRemove())
