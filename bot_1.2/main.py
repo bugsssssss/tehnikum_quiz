@@ -168,13 +168,13 @@ async def get_number(message, state=Registration.getting_phone_number):
                 already_registered = True
             else:
                 is_valid = True
-        elif len(message.text) == 13 and message.text[0] == '+':
-            phone_number = message.text
-            if phone_number in registered_numbers:
-                await message.answer('Этот номер уже зарегистрирован. Попробуй другой.')
-                already_registered = True
-            else:
-                is_valid = True
+        # elif len(message.text) == 13 and message.text[0] == '+':
+        #     phone_number = message.text
+        #     if phone_number in registered_numbers:
+        #         await message.answer('Этот номер уже зарегистрирован. Попробуй другой.')
+        #         already_registered = True
+        #     else:
+        #         is_valid = True
         else:
             is_valid = False
             # await state.update_data(number=phone_number)
@@ -310,11 +310,11 @@ async def get_verification(message, state=Registration.getting_verification_code
                     "is_verified": "False",
                     'verification_code': verification_code
                 }
-                 # ! генерируем код подтверждения
+                # ! генерируем код подтверждения
 
-                 # ! отправляем смс с кодом подтверждения
+                # ! отправляем смс с кодом подтверждения
                 send_sms(user_data['phone_number'],
-                        f'TEHNIKUM: Ваш новый код {verification_code}')
+                         f'TEHNIKUM: Ваш новый код {verification_code}')
                 url = f'https://p-api2.tehnikum.school/api/bot-users/{user_data["id"]}/'
 
                 # ! Обновляем его верификационный код
