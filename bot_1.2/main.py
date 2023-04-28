@@ -178,7 +178,6 @@ async def get_number(message, state=Registration.getting_phone_number):
         #         already_registered = True
         #     else:
         #         is_valid = True
-        else:
             is_valid = False
         phone_number = re.findall("\d+", phone_number)[0]
         print(phone_number)
