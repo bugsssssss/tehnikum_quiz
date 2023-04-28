@@ -10,7 +10,7 @@ import random
 import requests
 from aiogram.utils.deep_linking import decode_payload
 import json
-
+import re 
 registered_numbers = []
 
 
@@ -86,11 +86,6 @@ async def start_message(message):
             f'https://p-api2.tehnikum.school/api/bot-users/?id={user_id}').json()
 
         if user and user[0]['is_verified']:
-            file_path = os.path.join(os.getcwd(), "tehnikum.jpg")
-            # with open(file_path, "rb") as photo:
-            #     await bot.send_photo(chat_id=message.chat.id,
-            #                          photo=photo,
-            #                          caption=caption_final, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
             await message.answer(caption_final, parse_mode=types.ParseMode.HTML, reply_markup=buttons.web_app_inline_kb())
         else:
             await Registration.getting_started.set()
@@ -173,10 +168,17 @@ async def get_number(message, state=Registration.getting_phone_number):
                 already_registered = True
             else:
                 is_valid = True
-
+        # elif len(message.text) == 13 and message.text[0] == '+':
+        #     phone_number = message.text
+        #     if phone_number in registered_numbers:
+        #         await message.answer('Этот номер уже зарегистрирован. Попробуй другой.')
+        #         already_registered = True
+        #     else:
+        #         is_valid = True
         else:
             is_valid = False
-
+        phone_number = re.findall("\d+", phone_number)[0]
+        print(phone_number)
             # await state.update_data(number=phone_number)
         if is_valid:
             await message.answer('Теперь надо подтвердить. Отправили тебе смс с кодом, введи его сюда)', reply_markup=types.ReplyKeyboardRemove())
@@ -293,7 +295,7 @@ async def get_verification(message, state=Registration.getting_verification_code
                 # ? Обновляем статус верификации
 
                 response = requests.put(
-                    url, data={'category_id': None, 'is_verified': True})
+                    url, data={'category_id': None, 'is_verified': True, 'verification_code': user['verification_code']})
 
                 url_amo = f'https://tg-api.tehnikum.school/amo_crm/v1/create_lead?phone={user_data["phone_number"]}&name={user_data["first_name"]}&action=m-bot'
                 response_amo = requests.get(url_amo)
@@ -308,7 +310,7 @@ async def get_verification(message, state=Registration.getting_verification_code
                     'first_name': user['first_name'],
                     'phone_number': user['phone_number'],
                     "is_verified": "False",
-                    'verification_code': user['verification_code']
+                    'verification_code': verification_code
                 }
                  # ! генерируем код подтверждения
 
