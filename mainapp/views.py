@@ -69,6 +69,7 @@ class BotUsersDetail(generics.RetrieveUpdateDestroyAPIView):
                 "category_id"),
             "is_verified": request.data.get(
                 "is_verified"),
+            'verification_code': request.data.get('verification_code'),
         }
         if data['is_verified'] == None:
             data['is_verified'] = False

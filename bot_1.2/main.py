@@ -299,9 +299,28 @@ async def get_verification(message, state=Registration.getting_verification_code
                 response_amo = requests.get(url_amo)
                 print(
                     f'Is verified status has been updated: {response.json()}')
-            # else:
-            #     # ! Если код неверный, то выводим сообщение об ошибке
-            #     await message.answer('Неверный код. Попробуй еще раз')
+            else:
+                # ! Если код неверный, то выводим сообщение об ошибке
+                await message.answer('Неверный код. Отправили тебе новый код, введи его сюда: ')
+                verification_code = random.randint(1000, 9999)
+                user_data = {
+                    'id': user['id'],
+                    'first_name': user['first_name'],
+                    'phone_number': user['phone_number'],
+                    "is_verified": "False",
+                    'verification_code': user['verification_code']
+                }
+                 # ! генерируем код подтверждения
+
+                 # ! отправляем смс с кодом подтверждения
+                send_sms(user_data['phone_number'],
+                        f'TEHNIKUM: Ваш новый код {verification_code}')
+                url = f'https://p-api2.tehnikum.school/api/bot-users/{user_data["id"]}/'
+
+                # ! Обновляем его верификационный код
+                response = requests.put(url, data=user_data)
+                print(response.json())
+                status = 'code'
     # all_info = await state.get_data()
     # print(all_info)
 
