@@ -161,7 +161,7 @@ async def get_number(message, state=Registration.getting_phone_number):
             else:
                 phone_number = message.contact.phone_number
                 is_valid = True
-        elif len(message.text) == 12:
+        elif len(message.text) == 12 or len(message.text) == 13:
             phone_number = message.text
             if phone_number in registered_numbers:
                 await message.answer('Этот номер уже зарегистрирован. Попробуй другой.')
