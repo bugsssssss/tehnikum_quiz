@@ -10,7 +10,7 @@ import random
 import requests
 from aiogram.utils.deep_linking import decode_payload
 import json
-import re 
+
 registered_numbers = []
 
 
@@ -161,14 +161,13 @@ async def get_number(message, state=Registration.getting_phone_number):
             else:
                 phone_number = message.contact.phone_number
                 is_valid = True
-        elif len(message.text) == 12 or len(message.text) == 13:
+        elif len(message.text) == 12:
             phone_number = message.text
             if phone_number in registered_numbers:
                 await message.answer('Этот номер уже зарегистрирован. Попробуй другой.')
                 already_registered = True
             else:
                 is_valid = True
-
         elif len(message.text) == 13 and message.text[0] == '+':
             phone_number = message.text
             if phone_number in registered_numbers:
@@ -177,7 +176,6 @@ async def get_number(message, state=Registration.getting_phone_number):
             else:
                 is_valid = True
         else:
-            phone_number = message.text
             is_valid = False
             # await state.update_data(number=phone_number)
         if is_valid:
