@@ -168,6 +168,9 @@ async def get_number(message, state=Registration.getting_phone_number):
                 already_registered = True
             else:
                 is_valid = True
+        else:
+            phone_number = message.text
+            is_valid = False
         # elif len(message.text) == 13 and message.text[0] == '+':
         #     phone_number = message.text
         #     if phone_number in registered_numbers:
